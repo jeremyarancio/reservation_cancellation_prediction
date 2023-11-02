@@ -1,9 +1,10 @@
+"Training script"
 import logging
 
-from ml_pipeline.pipeline import Pipeline
-from ml_pipeline.preprocess_step import PreprocessStep
-from ml_pipeline.train_step import TrainStep
-from ml_pipeline.condition_step import ConditionStep
+from ml_pipeline.pipeline.pipeline import Pipeline
+from ml_pipeline.pipeline.preprocess_step import PreprocessStep
+from ml_pipeline.pipeline.train_step import TrainStep
+from ml_pipeline.pipeline.condition_step import ConditionStep
 
 from ml_pipeline.config import (
     DATA_PATH, 

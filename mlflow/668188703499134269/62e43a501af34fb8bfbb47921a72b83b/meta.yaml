@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/668188703499134269/62e43a501af34fb8bfbb47921a72b83b/artifacts
+end_time: 1698958037731
+entry_point_name: ''
+experiment_id: '668188703499134269'
+lifecycle_stage: active
+run_id: 62e43a501af34fb8bfbb47921a72b83b
+run_name: industrious-jay-173
+run_uuid: 62e43a501af34fb8bfbb47921a72b83b
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1698958012630
+status: 3
+tags: []
+user_id: jeremy

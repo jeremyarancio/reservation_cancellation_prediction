@@ -1,0 +1,14 @@
+aliases: []
+creation_timestamp: 1698946407608
+current_stage: None
+description: ''
+last_updated_timestamp: 1698946407608
+name: predictor
+run_id: 4f134c2140904599952c4c1ccb84a55e
+run_link: ''
+source: mlflow-artifacts:/668188703499134269/4f134c2140904599952c4c1ccb84a55e/artifacts/sklearn-artifact-model
+status: READY
+status_message: null
+storage_location: mlflow-artifacts:/668188703499134269/4f134c2140904599952c4c1ccb84a55e/artifacts/sklearn-artifact-model
+user_id: null
+version: 1
