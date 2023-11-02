@@ -1,4 +1,4 @@
-# Vacasa assignement
+# Vacasa assignment
 
 Hey, I'm Jérémy, NLP engineer for 2 years and Research Engineer for 5 years before that.
 I hope you're going to enjoy reading this project.
