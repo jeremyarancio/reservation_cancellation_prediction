@@ -6,6 +6,8 @@ I had a ton of pleasure doing it, especially the engineering part.
 
 To know more about me, check my [website](https://linktr.ee/jeremyarancio)! 
 
+![Test Image 4](images/vacasa.png)
+
 # How the project is structured
 
 The way I tackled this project can be divided into 4 parts: 
@@ -45,8 +47,8 @@ It acts as a `Step` easy to implement in `Pipelines`
 
 I went with Gradient Boosting and got a `roc_auc` of **96%**, which is quite great. 
 
-I'm surprise by this impressive results on first tries. 
-I didn't have much time to dig deeper into it, so I'm open to discuss it.
+I'm surprised by this impressive results on first tries. 
+I didn't have much time to dig deeper into it, so I'm open to discuss the results.
 
 The train script is located at: `ml_pipeline/pipeline/train_step.py`
 
@@ -55,9 +57,9 @@ The train script is located at: `ml_pipeline/pipeline/train_step.py`
 My favorite part! 
 
 MLFlow was used to track experiments and as a model registry.
-MLFlow API was used to track metrics, log artifacts and register a model in the model registry if the metric was better compared to the previous registered model version.
+It was used to track metrics, log artifacts and register models in the model registry if the metric was better compared to the previous registered model version.
 
-I kept MLFlow data in the repo (`mlflow/`) for the sake sharing the project with you, but deploying it on a docker container on EC2 or Heroku is the way. 
+I kept MLFlow data in the repo (`mlflow/`) for the sake of sharing the project with you, but deploying it on a docker container on EC2 or Heroku is the way. 
 
 Data was kept in the repository for more simplicity, but using DVC would have been better in this case (small dataset).
 
@@ -86,7 +88,7 @@ I invite you to explore the `ml_pipeline` to get a better grasp.
 │   └── train.py
 ```
 
-# Try it by yourself
+# Try it yourself!
 
 ## Set up your environment
 Create a new environment (python=3.9) and run:
