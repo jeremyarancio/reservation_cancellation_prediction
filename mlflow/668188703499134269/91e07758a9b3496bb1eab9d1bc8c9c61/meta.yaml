@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/668188703499134269/91e07758a9b3496bb1eab9d1bc8c9c61/artifacts
+end_time: 1703071936568
+entry_point_name: ''
+experiment_id: '668188703499134269'
+lifecycle_stage: active
+run_id: 91e07758a9b3496bb1eab9d1bc8c9c61
+run_name: capricious-snipe-960
+run_uuid: 91e07758a9b3496bb1eab9d1bc8c9c61
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703071920950
+status: 3
+tags: []
+user_id: jeremy

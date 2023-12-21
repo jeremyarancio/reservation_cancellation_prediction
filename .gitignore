@@ -1,1 +1,3 @@
 __pycache__
+airflow/logs
+airflow/standalone_admin_password.txt

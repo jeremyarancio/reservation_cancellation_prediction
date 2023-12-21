@@ -1,17 +1,14 @@
-from typing import Dict
 import logging
 
 import mlflow
 
-from ml_pipeline.config import MlflowConfig
-from ml_pipeline.pipeline.utils.step import Step
+from ml_pipeline.config import MlFlowConfig
 
 
 LOGGER = logging.getLogger(__name__)
-mlflow.set_tracking_uri(MlflowConfig.uri)
 
 
-class ConditionStep(Step):
+class ConditionStep:
     """Condition to register the model.
     
     Args:
@@ -27,25 +24,29 @@ class ConditionStep(Step):
         self.criteria = criteria
         self.metric = metric
 
-    def run_step(self) -> None:
+    def __call__(self, mlflow_run_id: str) -> None:
         """
         Compare the metric from the last run to the model in the registry.
         if `metric_run > registered_metric*(1 + self.criteria)`, then the model is registered.
         """
 
-        run_id = self.inputs
+        LOGGER.info(f"Run_id: {mlflow_run_id}")
+        mlflow.set_tracking_uri(MlFlowConfig.uri)
 
-        run = mlflow.get_run(run_id=run_id)
+        run = mlflow.get_run(run_id=mlflow_run_id)
         metric = run.data.metrics[self.metric]
 
-        registered_models = mlflow.search_registered_models()
+        registered_models = mlflow.search_registered_models(
+            filter_string=f"name = '{MlFlowConfig.registered_model_name}'"
+        )
 
         if not registered_models:
             mlflow.register_model(
-                model_uri=f"runs:/{run_id}/{MlflowConfig.artifact_path}", 
-                name=MlflowConfig.registered_model_name
+                model_uri=f"runs:/{mlflow_run_id}/{MlFlowConfig.artifact_path}", 
+                name=MlFlowConfig.registered_model_name
             )
-            return LOGGER.info("New model registered.")
+            LOGGER.info("New model registered.")
+            return 0
 
         latest_registered_model = registered_models[0]
         registered_model_run = mlflow.get_run(latest_registered_model.latest_versions[0].run_id) #TODO: Can be improved
@@ -53,10 +54,8 @@ class ConditionStep(Step):
 
         if metric > registered_metric*(1 + self.criteria):
             mlflow.register_model(
-                model_uri=f"runs:/{run_id}/{MlflowConfig.artifact_path}", 
-                name=MlflowConfig.registered_model_name
+                model_uri=f"runs:/{mlflow_run_id}/{MlFlowConfig.artifact_path}", 
+                name=MlFlowConfig.registered_model_name
             )
-            return LOGGER.info("Model registered as a new version.")
-        
-        self.outputs = None
-    
+            LOGGER.info("Model registered as a new version.")
+            return 0    
