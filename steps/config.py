@@ -8,10 +8,9 @@ TRAINING_DATA_PATH = REPO_DIR / "data/hotel_bookings.parquet"
 
 
 class PreprocessConfig:
-    data_dir = REPO_DIR / "data/preprocessed"
-    train_name = "train.parquet"
-    test_name = "test.parquet"
-    batch_name = "batch.parquet"
+    train_path = REPO_DIR / "data/preprocessed/train.parquet"
+    test_path = REPO_DIR / "data/preprocessed/test.parquet"
+    batch_path = REPO_DIR / "data/preprocessed/batch.parquet"
 
 class TrainerConfig:
     model_name ="gradient-boosting"
@@ -35,8 +34,10 @@ class MlFlowConfig:
     registered_model_name = "cancelation_estimator"
 
 class FeatureEngineeringConfig:
-    features_dir = REPO_DIR / "data/features_store"
-    encoders_path = REPO_DIR / "artifact/encoders.joblib"
+    train_path = REPO_DIR / "data/features_store/train.parquet"
+    test_path = REPO_DIR / "data/features_store/test.parquet"
+    batch_path = REPO_DIR / "data/features_store/batch.parquet"
+    encoders_path = REPO_DIR / "artifacts/encoders.joblib"
     base_features = [
         "lead_time",
         "arrival_date_year",

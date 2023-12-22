@@ -8,7 +8,7 @@ from steps.preprocess_step import PreprocessStep
 from steps.train_step import TrainStep
 from steps.condition_step import ConditionStep
 from steps.feature_engineering_step import FeatureEngineeringStep
-from steps.utils.features_store import FeaturesStore
+from steps.utils.data_classes import PreprocessingData, FeaturesEngineeringEData
 from steps.config import (
     TRAINING_DATA_PATH,
     TrainerConfig,
@@ -17,22 +17,34 @@ from steps.config import (
     FeatureEngineeringConfig,
 )
 
-
+# Preparation
 inference_mode = False
-feature_store = FeaturesStore(
-    features_dir=FeatureEngineeringConfig.features_dir,
+preprocessing_data = PreprocessingData(
+    train_path=PreprocessConfig.train_path,
+    test_path=PreprocessConfig.test_path
+)
+feature_engineering_data = FeaturesEngineeringEData(
+    train_path=FeatureEngineeringConfig.train_path,
+    test_path=FeatureEngineeringConfig.test_path,
     encoders_path=FeatureEngineeringConfig.encoders_path,
 )
+target = FeatureEngineeringConfig.target
+
+# Steps
 preprocess_step = PreprocessStep(
-    inference_mode=inference_mode, preprocessed_data_dir=PreprocessConfig.data_dir
+    inference_mode=inference_mode, 
+    preprocessing_data=preprocessing_data
 )
 feature_engineering_step = FeatureEngineeringStep(
-    features_store=feature_store,
-    inference_mode=inference_mode
+    inference_mode=inference_mode,
+    feature_engineering_data=feature_engineering_data
 )
-train_step = TrainStep(params=TrainerConfig.params)
+train_step = TrainStep(
+    params=TrainerConfig.params
+)
 condition_step = ConditionStep(
-    criteria=ConditionConfig.criteria, metric=ConditionConfig.metric
+    criteria=ConditionConfig.criteria, 
+    metric=ConditionConfig.metric
 )
 
 default_args = {
@@ -58,23 +70,23 @@ with DAG(
         task_id="feature_engineering",
         python_callable=feature_engineering_step,
         op_kwargs={
-            "train_path": PreprocessConfig.data_dir / "train.parquet",
-            "test_path": PreprocessConfig.data_dir / "test.parquet",
+            "train_path": preprocessing_data.train_path,
+            "test_path": preprocessing_data.test_path,
         },
     )
     training_task = PythonOperator(
         task_id="training",
         python_callable=train_step,
         op_kwargs={
-            "train_path": feature_store.features_dir / "train.parquet",
-            "test_path": feature_store.features_dir / "test.parquet",
-            "target": FeatureEngineeringConfig.target
+            "train_path": feature_engineering_data.train_path,
+            "test_path": feature_engineering_data.test_path,
+            "target": target
         },
     )
-    vaildation_task = PythonOperator(
+    validation_task = PythonOperator(
         task_id="validation",
         python_callable=condition_step,
         op_kwargs=training_task.output,
     )
 
-    preprocessing_task >> feature_engineering_task >> training_task >> vaildation_task
+    preprocessing_task >> feature_engineering_task >> training_task >> validation_task

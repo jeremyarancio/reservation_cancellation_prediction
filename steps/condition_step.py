@@ -1,4 +1,5 @@
 import logging
+from typing import Literal
 
 import mlflow
 
@@ -10,16 +11,14 @@ LOGGER = logging.getLogger(__name__)
 
 class ConditionStep:
     """Condition to register the model.
-    
+
     Args:
         criteria (float): Coefficient applied to the metric of the model registered in the model registry.
         metric (str): Metric as a reference. Can be `["precision", "recall", or "roc_auc"]`. Default to `"roc_auc"`.
     """
 
-    def __init__(     
-        self,
-        criteria: float,
-        metric: str = "roc_auc"
+    def __init__(
+        self, criteria: float, metric: Literal["roc_auc", "precision", "recall"]
     ) -> None:
         self.criteria = criteria
         self.metric = metric
@@ -42,18 +41,20 @@ class ConditionStep:
 
         if not registered_models:
             mlflow.register_model(
-                model_uri=f"runs:/{mlflow_run_id}/{MlFlowConfig.artifact_path}", 
-                name=MlFlowConfig.registered_model_name
+                model_uri=f"runs:/{mlflow_run_id}/{MlFlowConfig.artifact_path}",
+                name=MlFlowConfig.registered_model_name,
             )
             LOGGER.info("New model registered.")
 
         latest_registered_model = registered_models[0]
-        registered_model_run = mlflow.get_run(latest_registered_model.latest_versions[0].run_id) #TODO: Can be improved
+        registered_model_run = mlflow.get_run(
+            latest_registered_model.latest_versions[0].run_id
+        )  # TODO: Can be improved
         registered_metric = registered_model_run.data.metrics[self.metric]
 
-        if metric > registered_metric*(1 + self.criteria):
+        if metric > registered_metric * (1 + self.criteria):
             mlflow.register_model(
-                model_uri=f"runs:/{mlflow_run_id}/{MlFlowConfig.artifact_path}", 
-                name=MlFlowConfig.registered_model_name
+                model_uri=f"runs:/{mlflow_run_id}/{MlFlowConfig.artifact_path}",
+                name=MlFlowConfig.registered_model_name,
             )
             LOGGER.info("Model registered as a new version.")

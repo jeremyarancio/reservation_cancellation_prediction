@@ -1,15 +1,25 @@
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable
+from typing import Iterable, Optional
 import joblib
 
 from sklearn.preprocessing import OrdinalEncoder, TargetEncoder
 
 
 @dataclass
-class FeaturesStore:
-    features_dir: Path
+class PreprocessingData:
+    train_path: Optional[Path] = None
+    test_path: Optional[Path] = None
+    batch_path: Optional[Path] = None
+
+
+@dataclass
+class FeaturesEngineeringEData:
     encoders_path: Path
+    train_path: Optional[Path] = None
+    test_path: Optional[Path] = None
+    batch_path: Optional[Path] = None
+
 
 @dataclass
 class FeaturesEncoder:

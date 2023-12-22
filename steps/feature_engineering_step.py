@@ -6,7 +6,7 @@ from pathlib import Path
 from sklearn.preprocessing import TargetEncoder, OrdinalEncoder
 import pandas as pd
 
-from steps.utils.features_store import FeaturesEncoder, FeaturesStore
+from steps.utils.data_classes import FeaturesEncoder, FeaturesEngineeringEData
 from steps.config import FeatureEngineeringConfig
 
 
@@ -14,9 +14,13 @@ LOGGER = logging.getLogger(__name__)
 
 
 class FeatureEngineeringStep:
-    def __init__(self, features_store: FeaturesStore, inference_mode: bool) -> None:
-        self.features_store = features_store
+    def __init__(
+            self,
+            inference_mode: bool,
+            feature_engineering_data: FeaturesEngineeringEData
+        ) -> None:
         self.inference_mode = inference_mode
+        self.feature_engineering_data = feature_engineering_data
 
     def __call__(
         self,
@@ -25,19 +29,25 @@ class FeatureEngineeringStep:
         batch_path: Optional[Path] = None,
     ) -> None:
         if not self.inference_mode:
-            filename_train = train_path.stem
-            filename_test = test_path.stem
             train_df = pd.read_parquet(train_path)
             test_df = pd.read_parquet(test_path)
-            self.fit_transform(df=train_df, file_name=filename_train)
-            self.transform(df=test_df, file_name=filename_test)
+            self.fit_transform(
+                df=train_df, 
+                path=self.feature_engineering_data.train_path
+            )
+            self.transform(
+                df=test_df,
+                path=self.feature_engineering_data.test_path
+            )
 
         if self.inference_mode:
-            filename = batch_path.stem
             batch_df = pd.read_parquet(batch_path)
-            self.transform(batch_df, file_name=filename)
+            self.transform(
+                batch_df,
+                path=self.feature_engineering_data.batch_path
+            )
 
-    def fit_transform(self, df: pd.DataFrame, file_name: str) -> None:
+    def fit_transform(self, df: pd.DataFrame, path: Path) -> None:
         """Feature engineering methods.
 
         Args:
@@ -59,12 +69,11 @@ class FeatureEngineeringStep:
         # Don't forget to add the target
         base_df[feature_encoders.target] = target_col
 
-        data_path = self.features_store.features_dir / (file_name + ".parquet")
-        base_df.to_parquet(data_path)
-        feature_encoders.to_joblib(path=self.features_store.encoders_path)
-        LOGGER.info(f"Features and encoders successfully saved respectively to {str(data_path)} and {str(self.features_store.encoders_path)}")
+        base_df.to_parquet(path=path)
+        feature_encoders.to_joblib(path=self.feature_engineering_data.encoders_path)
+        LOGGER.info(f"Features and encoders successfully saved respectively to {str(path)} and {str(self.feature_engineering_data.encoders_path)}")
 
-    def transform(self, df: pd.DataFrame, file_name: str) -> None:
+    def transform(self, df: pd.DataFrame, path: Path) -> None:
         """ """
         LOGGER.info("Start features engineering 'tranform'.")
         # TODO: Raise error if fit_transform not instantiated
@@ -83,11 +92,8 @@ class FeatureEngineeringStep:
         if target_col is not None:
             base_df[features_encoder.target] = target_col
 
-        data_path = self.features_store.features_dir / (file_name + ".parquet")
-        base_df.to_parquet(data_path)
-        LOGGER.info(
-            f"Features and encoders successfully saved respectively to {str(data_path)} and {str(self.features_store.encoders_path)}"
-        )
+        base_df.to_parquet(path=path)
+        LOGGER.info(f"Features successfully saved to {str(path)}")
 
     def _init_features_encoder(self) -> FeaturesEncoder:
         """_summary_
@@ -111,7 +117,7 @@ class FeatureEngineeringStep:
 
     def _load_features_encoder(self) -> FeaturesEncoder:
         # Load encoders artifact
-        features_encoder = joblib.load(self.features_store.encoders_path)
+        features_encoder = joblib.load(self.feature_engineering_data.encoders_path)
         return features_encoder
 
     def _get_dfs(

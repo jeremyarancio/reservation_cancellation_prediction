@@ -6,7 +6,7 @@ from airflow.operators.python import PythonOperator
 from steps.preprocess_step import PreprocessStep
 from steps.inference_step import InferenceStep
 from steps.feature_engineering_step import FeatureEngineeringStep
-from steps.utils.features_store import FeaturesStore
+from steps.utils.data_classes import PreprocessingData, FeaturesEngineeringEData
 from steps.config import (
     FeatureEngineeringConfig,
     INFERENCE_DATA_PATH,
@@ -14,19 +14,24 @@ from steps.config import (
 )
 
 
+# Preparation
 inference_mode = True
-features_store = FeaturesStore(
-    features_dir=FeatureEngineeringConfig.features_dir,
+preprocessing_data = PreprocessingData(
+    batch_path=PreprocessConfig.batch_path
+)
+features_engineering_data = FeaturesEngineeringEData(
+    batch_path=FeatureEngineeringConfig.batch_path,
     encoders_path=FeatureEngineeringConfig.encoders_path,
 )
 
 # Steps
 preprocess_step = PreprocessStep(
-    inference_mode=inference_mode, preprocessed_data_dir=PreprocessConfig.data_dir
+    inference_mode=inference_mode, 
+    preprocessing_data=preprocessing_data
 )
 feature_engineering_step = FeatureEngineeringStep(
-    features_store=features_store,
     inference_mode=inference_mode,
+    feature_engineering_data=features_engineering_data
 )
 inference_step = InferenceStep()
 
@@ -48,19 +53,23 @@ with DAG(
     preprocessing_task = PythonOperator(
         task_id="preprocessing",
         python_callable=preprocess_step,
-        op_kwargs={"data_path": INFERENCE_DATA_PATH},
+        op_kwargs={
+            "data_path": INFERENCE_DATA_PATH
+        }
     )
     feature_engineering_task = PythonOperator(
         task_id="feature_engineering",
         python_callable=feature_engineering_step,
         op_kwargs={
-            "batch_path": PreprocessConfig.data_dir / PreprocessConfig.batch_name
-        },
+            "batch_path": preprocessing_data.batch_path
+        }
     )
     inference_task = PythonOperator(
         task_id="inference",
         python_callable=inference_step,
-        op_kwargs={"batch_path": features_store.features_dir / "batch.parquet"},
+        op_kwargs={
+            "batch_path": features_engineering_data.batch_path
+        }
     )
 
     preprocessing_task >> feature_engineering_task >> inference_task
