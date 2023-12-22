@@ -2,7 +2,7 @@ import logging
 
 import mlflow
 
-from ml_pipeline.config import MlFlowConfig
+from steps.config import MlFlowConfig
 
 
 LOGGER = logging.getLogger(__name__)
@@ -46,7 +46,6 @@ class ConditionStep:
                 name=MlFlowConfig.registered_model_name
             )
             LOGGER.info("New model registered.")
-            return 0
 
         latest_registered_model = registered_models[0]
         registered_model_run = mlflow.get_run(latest_registered_model.latest_versions[0].run_id) #TODO: Can be improved
@@ -58,4 +57,3 @@ class ConditionStep:
                 name=MlFlowConfig.registered_model_name
             )
             LOGGER.info("Model registered as a new version.")
-            return 0    

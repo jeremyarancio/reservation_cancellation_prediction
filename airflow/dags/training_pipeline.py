@@ -4,12 +4,12 @@ from datetime import datetime
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 
-from ml_pipeline.pipeline.preprocess_step import PreprocessStep
-from ml_pipeline.pipeline.train_step import TrainStep
-from ml_pipeline.pipeline.condition_step import ConditionStep
-from ml_pipeline.pipeline.feature_engineering_step import FeatureEngineeringStep
-from ml_pipeline.pipeline.utils.features_store import FeaturesStore
-from ml_pipeline.config import (
+from steps.preprocess_step import PreprocessStep
+from steps.train_step import TrainStep
+from steps.condition_step import ConditionStep
+from steps.feature_engineering_step import FeatureEngineeringStep
+from steps.utils.features_store import FeaturesStore
+from steps.config import (
     TRAINING_DATA_PATH,
     TrainerConfig,
     ConditionConfig,

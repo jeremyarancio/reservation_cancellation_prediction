@@ -5,7 +5,7 @@ import json
 import mlflow
 import pandas as pd
 
-from ml_pipeline.config import MlFlowConfig
+from steps.config import MlFlowConfig
 
 LOGGER = logging.getLogger(__name__)
 

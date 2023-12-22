@@ -6,7 +6,7 @@ from sklearn.metrics import classification_report, roc_auc_score, precision_scor
 import pandas as pd
 import mlflow
 
-from ml_pipeline.config import TrainerConfig, MlFlowConfig
+from steps.config import TrainerConfig, MlFlowConfig
 
 
 class TrainStep:

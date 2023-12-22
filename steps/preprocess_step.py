@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from ml_pipeline.config import TrainerConfig
+from steps.config import TrainerConfig
 
 
 class PreprocessStep:
