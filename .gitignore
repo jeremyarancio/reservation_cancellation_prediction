@@ -1,5 +1,6 @@
 __pycache__
 airflow/logs
+airflow/airflow.db
 airflow/standalone_admin_password.txt
 artifacts/**.joblib
 data/features_store/**.parquet
