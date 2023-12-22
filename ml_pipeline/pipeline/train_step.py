@@ -7,8 +7,6 @@ import pandas as pd
 import mlflow
 
 from ml_pipeline.config import TrainerConfig, MlFlowConfig
-from ml_pipeline.pipeline.utils.artifact import Artifact
-from ml_pipeline.pipeline.feature_engineering_step import FeatureEngineering
 
 
 class TrainStep:
@@ -25,28 +23,25 @@ class TrainStep:
     def __init__(
             self,
             params: Dict[str, Any],
-            train_path: Path,
-            test_path: Path,
             model_name: str = TrainerConfig.model_name
     ) -> None:
         self.params = params
         self.model_name = model_name
-        self.train_path = train_path
-        self.test_path = test_path
 
-    def __call__(self) -> None:
+    def __call__(
+            self,
+            train_path: Path,
+            test_path: Path,
+            target: str
+        ) -> None:
 
         mlflow.set_tracking_uri(MlFlowConfig.uri)
         mlflow.set_experiment(MlFlowConfig.experiment_name)
         
         with mlflow.start_run():
 
-            train_df = pd.read_parquet(self.train_path)
-            test_df = pd.read_parquet(self.test_path)
-
-            feature_engineering = FeatureEngineering()
-            preprocessed_train_df = feature_engineering.fit_transform(train_df)
-            preprocessed_test_df = feature_engineering.transform(test_df)
+            train_df = pd.read_parquet(train_path)
+            test_df = pd.read_parquet(test_path)
             
             # Train
             gbc = GradientBoostingClassifier(
@@ -55,13 +50,13 @@ class TrainStep:
                 **self.params
             )
             model = gbc.fit(
-                preprocessed_train_df.drop(feature_engineering.target_name, axis=1),
-                preprocessed_train_df[feature_engineering.target_name]
+                train_df.drop(target, axis=1),
+                train_df[target]
             )
 
             # Evaluate
-            y_test = preprocessed_test_df[feature_engineering.target_name]
-            y_pred = model.predict(preprocessed_test_df.drop(feature_engineering.target_name, axis=1))
+            y_test = test_df[target]
+            y_pred = model.predict(test_df.drop(target, axis=1))
 
             # Metrics
             precision = precision_score(y_test, y_pred)
@@ -79,15 +74,9 @@ class TrainStep:
             mlflow.log_params(TrainerConfig.params)
             mlflow.log_metrics(metrics)
             mlflow.set_tag(key="model", value=self.model_name)
-            mlflow.pyfunc.log_model(
-                artifact_path=MlFlowConfig.artifact_path,
-                python_model=Artifact(
-                    model=model,
-                    ordinal_encoder=feature_engineering.ordinal_encoder,
-                    ordinal_encoded_features=feature_engineering.ordinal_encoded_features,
-                    target_encoder=feature_engineering.target_encoder,
-                    target_encoded_features=feature_engineering.target_encoded_features
-                )               
+            mlflow.sklearn.log_model(
+                sk_model=model,
+                artifact_path=MlFlowConfig.artifact_path,      
             )
 
             return {"mlflow_run_id": mlflow.active_run().info.run_id}

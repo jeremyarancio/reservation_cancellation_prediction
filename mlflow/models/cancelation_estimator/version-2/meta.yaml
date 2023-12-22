@@ -1,0 +1,14 @@
+aliases: []
+creation_timestamp: 1703247697898
+current_stage: None
+description: ''
+last_updated_timestamp: 1703247697898
+name: cancelation_estimator
+run_id: 91f6a059f6bf47fea76cceb0d1f8b1fa
+run_link: ''
+source: mlflow-artifacts:/668188703499134269/91f6a059f6bf47fea76cceb0d1f8b1fa/artifacts/model-artifact
+status: READY
+status_message: null
+storage_location: mlflow-artifacts:/668188703499134269/91f6a059f6bf47fea76cceb0d1f8b1fa/artifacts/model-artifact
+user_id: null
+version: 2

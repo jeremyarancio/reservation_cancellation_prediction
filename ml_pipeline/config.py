@@ -3,15 +3,15 @@ from pathlib import Path
 
 
 REPO_DIR = Path(os.path.realpath(""))
-INFERENCE_DATA_PATH = REPO_DIR / "data/inference/sample_for_inference.csv"
+INFERENCE_DATA_PATH = REPO_DIR / "data/sample_for_inference.parquet"
+TRAINING_DATA_PATH = REPO_DIR / "data/hotel_bookings.parquet"
 
 
-class DataConfig:
-    train_path = REPO_DIR / "data/preprocessed/train.parquet"
-    test_path = REPO_DIR / "data/preprocessed/test.parquet"
-    data_path = REPO_DIR / "data/hotel_bookings.parquet"
-    batch_path = REPO_DIR / "data/inference/sample_for_inference.parquet"
-    preprocessed_batch_data_path = REPO_DIR / "data/inference/preprocessed_sample.parquet"
+class PreprocessConfig:
+    data_dir = REPO_DIR / "data/preprocessed"
+    train_name = "train.parquet"
+    test_name = "test.parquet"
+    batch_name = "batch.parquet"
 
 class TrainerConfig:
     model_name ="gradient-boosting"
@@ -35,6 +35,8 @@ class MlFlowConfig:
     registered_model_name = "cancelation_estimator"
 
 class FeatureEngineeringConfig:
+    features_dir = REPO_DIR / "data/features_store"
+    encoders_path = REPO_DIR / "artifact/encoders.joblib"
     base_features = [
         "lead_time",
         "arrival_date_year",

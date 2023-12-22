@@ -1,7 +1,8 @@
+from pathlib import Path
+
 import pandas as pd
 
 from ml_pipeline.config import TrainerConfig
-from ml_pipeline.pipeline.utils.data import Data, TrainingData, BatchInferenceData
 
 
 class PreprocessStep:
@@ -15,25 +16,33 @@ class PreprocessStep:
         training_mode (Optional[bool], optional): Switch to training or inference mode. Defaults to True.
     """
     def __init__(
-            self,
-            data: Data
+        self,
+        inference_mode: bool,
+        preprocessed_data_dir: Path
     ) -> None:
-        self.data = data
+        self.inference_mode = inference_mode
+        self.preprocessed_data_dir = preprocessed_data_dir
 
-    def __call__(self) -> None:
+    def __call__(
+            self, 
+            data_path: Path
+        ) -> None:
         """Check notebook: `notebooks/0_exploratory_data_analysis.ipynb`"""
 
-        preprocessed_df = pd.read_parquet(self.data.data_path)
+        preprocessed_df = pd.read_parquet(data_path)
         preprocessed_df = self._preprocess(preprocessed_df)
 
-        if isinstance(self.data, TrainingData):
-            train_df = preprocessed_df.sample(frac=TrainerConfig.train_size, random_state=TrainerConfig.random_state)
+        if not self.inference_mode:
+            train_df = preprocessed_df.sample(
+                frac=TrainerConfig.train_size, 
+                random_state=TrainerConfig.random_state
+            )
             test_df = preprocessed_df.drop(train_df.index)
-            train_df.to_parquet(self.data.train_path, index=False)
-            test_df.to_parquet(self.data.test_path, index=False)
+            train_df.to_parquet(self.preprocessed_data_dir / "train.parquet", index=False)
+            test_df.to_parquet(self.preprocessed_data_dir / "test.parquet", index=False)
         
-        if isinstance(self.data, BatchInferenceData):
-            preprocessed_df.to_parquet(self.data.preprocessed_batch_data_path, index=False)
+        if self.inference_mode:
+            preprocessed_df.to_parquet(self.preprocessed_data_dir / "batch.parquet", index=False)
 
     @staticmethod
     def _preprocess(df: pd.DataFrame) -> pd.DataFrame:
