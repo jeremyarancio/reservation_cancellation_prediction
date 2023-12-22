@@ -26,7 +26,10 @@ class PreprocessStep:
         self.preprocessing_data = preprocessing_data
 
     def __call__(self, data_path: Path) -> None:
-        """Check notebook: `notebooks/0_exploratory_data_analysis.ipynb`"""
+        """Data is preprocessed then, regarding if inference=True or False:
+            * False: Split data into train and test.
+            * True: Data preprocessed then returned simply
+        """
 
         preprocessed_df = pd.read_parquet(data_path)
         preprocessed_df = self._preprocess(preprocessed_df)
@@ -44,14 +47,7 @@ class PreprocessStep:
 
     @staticmethod
     def _preprocess(df: pd.DataFrame) -> pd.DataFrame:
-        """_summary_
-
-        Args:
-            df (pd.DataFrame): _description_
-
-        Returns:
-            pd.DataFrame: _description_
-        """
+        """Preprocessing."""
         df["children"].fillna(0, inplace=True)
         df["country"].fillna("Unknown", inplace=True)
         df["agent"].fillna(0, inplace=True)

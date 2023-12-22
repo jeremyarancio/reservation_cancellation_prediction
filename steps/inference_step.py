@@ -15,7 +15,14 @@ class InferenceStep:
     "Get the model from the model registry and predict in batch"
 
     def __call__(self, batch_path: Path) -> List[int]:
-        """Use the MLFlow artifact built-in predict`"""
+        """Use the MLFlow artifact built-in predict.
+        
+        Args:
+            batch_path (Path): Input batch_path
+
+        Return (List[int]):
+            Predictions
+        """
         model = self._load_model(
             registered_model_name=MlFlowConfig.registered_model_name
         )
@@ -32,6 +39,14 @@ class InferenceStep:
 
     @staticmethod
     def _load_model(registered_model_name: str):
+        """Load model from model registry.
+
+        Args:
+            registered_model_name (str): Name
+
+        Returns:
+            Model artifact
+        """
         mlflow.set_tracking_uri(MlFlowConfig.uri)
         models = mlflow.search_registered_models(
             filter_string=f"name = '{registered_model_name}'"
@@ -53,6 +68,7 @@ class InferenceStep:
 
     @staticmethod
     def _load_batch(batch_path: Path) -> pd.DataFrame:
+        """Load dataframe from path"""
         batch = pd.read_parquet(batch_path)
         LOGGER.info(f"Batch columns: {batch.columns}")
         return batch

@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/668188703499134269/661c6347b9ec426dae5df5f9153f39df/artifacts
+end_time: 1703267135443
+entry_point_name: ''
+experiment_id: '668188703499134269'
+lifecycle_stage: active
+run_id: 661c6347b9ec426dae5df5f9153f39df
+run_name: glamorous-mouse-649
+run_uuid: 661c6347b9ec426dae5df5f9153f39df
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703267105503
+status: 3
+tags: []
+user_id: jeremy
