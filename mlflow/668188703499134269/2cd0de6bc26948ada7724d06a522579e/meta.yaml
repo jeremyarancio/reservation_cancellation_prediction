@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/668188703499134269/2cd0de6bc26948ada7724d06a522579e/artifacts
+end_time: 1703245287414
+entry_point_name: ''
+experiment_id: '668188703499134269'
+lifecycle_stage: active
+run_id: 2cd0de6bc26948ada7724d06a522579e
+run_name: valuable-gnat-479
+run_uuid: 2cd0de6bc26948ada7724d06a522579e
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703245275603
+status: 3
+tags: []
+user_id: jeremy

@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/668188703499134269/fd279e7e6648411fbe6a55ffd31e35bc/artifacts
+end_time: 1703248467826
+entry_point_name: ''
+experiment_id: '668188703499134269'
+lifecycle_stage: active
+run_id: fd279e7e6648411fbe6a55ffd31e35bc
+run_name: rogue-carp-293
+run_uuid: fd279e7e6648411fbe6a55ffd31e35bc
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703248450164
+status: 3
+tags: []
+user_id: jeremy

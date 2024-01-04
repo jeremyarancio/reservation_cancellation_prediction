@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/668188703499134269/6c54ac12b4364dde8ed355cf2f10b397/artifacts
+end_time: 1703264878594
+entry_point_name: ''
+experiment_id: '668188703499134269'
+lifecycle_stage: active
+run_id: 6c54ac12b4364dde8ed355cf2f10b397
+run_name: unique-gull-734
+run_uuid: 6c54ac12b4364dde8ed355cf2f10b397
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703264866943
+status: 3
+tags: []
+user_id: jeremy

@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/668188703499134269/91f6a059f6bf47fea76cceb0d1f8b1fa/artifacts
+end_time: 1703245890654
+entry_point_name: ''
+experiment_id: '668188703499134269'
+lifecycle_stage: active
+run_id: 91f6a059f6bf47fea76cceb0d1f8b1fa
+run_name: invincible-moth-390
+run_uuid: 91f6a059f6bf47fea76cceb0d1f8b1fa
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703245880390
+status: 3
+tags: []
+user_id: jeremy
