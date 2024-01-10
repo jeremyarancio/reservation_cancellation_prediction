@@ -1,131 +1,111 @@
-# Vacasa assignment
+<a name="readme-top"></a>
 
-Hey, I'm Jérémy, NLP engineer for 2 years and Research Engineer for 5 years before that.
-I hope you're going to enjoy reading this project.
-I had a ton of pleasure doing it, especially the engineering part.
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![LinkedIn][linkedin-shield]][linkedin-url]
 
-To know more about me, check my [website](https://linktr.ee/jeremyarancio)! 
 
-![Test Image 4](images/vacasa.png)
 
-# How the project is structured
 
-The way I tackled this project can be divided into 4 parts: 
-* Exploratory data analysis
-* Data preprocessing
-* Model selection and training
-* MLOps: reproducibility and deployment
+# Reservation Cancellation Forecasting: a Senior Machine Learning Engineer assignment
 
-But the repository is organized in a more engineer way. 
+![Pipelines](images/ml_pipelines.png)
 
-Let me walk you through my thought process then present you the enginneer part after.
+In this repository, you'll find a project I handled during a Machine Learning assignment for a leader in the short-term rental industry. 
 
-## Thought process
+The objective of this assignment was clear: 
+* Build a Machine Learning model to predict whether a reservation is likely to be cancelled,
+* Develop an MLOps architecture designed for a production environment.
 
-### Exploratory Data Analysis
+To accomplish this task, **Airflow** and **Mlflow** are used to build Machine Learning Pipelines, fully customizable and ready for a production environment.
 
-The dataset that was provided was extremely clean. Thus, it didn't need a lot of preprocessing.
+This Github repo comes with a complete article published in [Towards Data Science journal](https://towardsdatascience.com/):
 
-One element I mainly focused on was the categorical features (months, etc...)
-To avoid the [curse of dimensionality](https://en.wikipedia.org/wiki/Curse_of_dimensionality) in the case a number of unique categories high, I decided to go with the [TargetEncoder](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.TargetEncoder.html) algorithm, and simple a [OrdinalEncoder](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.OrdinalEncoder.html) algorithm otherwise.
+[Build Machine Learning Pipelines with Airflow and Mlflow: Reservation Cancellation Forecasting.](https://medium.com/towards-data-science/building-a-matching-tool-to-help-start-up-founders-find-the-best-incubators-an-end-to-end-bd65c41175bd)
 
-All the exploratory was done in the following notebook: `notebooks/0_exploratory_data_analysis.ipynb`
+## Code organization
 
-### Data preprocessing
-
-Based on the EDA, I wrote a Python script directly implemented into the MLOps part for reproducibility and later for inference. (I don't like notebooks for preprocessing data since it's hard to make it reproducible in a project)
-
-Some columns associated with the target column were of course removed (`reservation_status` for example).
-Otherwise, it would have biased the model.
-
-*"The sky is blue. What color is the sky? You know what I mean...*
-
-The script is located here: `ml_pipeline/pipeline/preprocess_step.py`
-It acts as a `Step` easy to implement in `Pipelines`
-
-### Model selection and training
-
-I went with Gradient Boosting and got a `roc_auc` of **96%**, which is quite great. 
-
-I'm surprised by this impressive results on first tries. 
-I didn't have much time to dig deeper into it, so I'm open to discuss the results.
-
-The train script is located at: `ml_pipeline/pipeline/train_step.py`
-
-### MLOps: reproducibility and deployment
-
-My favorite part! 
-
-MLFlow was used to track experiments and as a model registry.
-It was used to track metrics, log artifacts and register models in the model registry if the metric was better compared to the previous registered model version.
-
-I kept MLFlow data in the repo (`mlflow/`) for the sake of sharing the project with you, but deploying it on a docker container on EC2 or Heroku is the way. 
-
-Data was kept in the repository for more simplicity, but using DVC would have been better in this case (small dataset).
-
-Regarding the reproducibility, I built a `Pipeline` composed of `Steps`. Each `Step` has its own purpose and connect with data and MLflow. 
-
-You can change the pararemeters of the model, the criteria to register a new model or change the metric pretty easily.
-
-I invite you to explore the `ml_pipeline` to get a better grasp.
-
-`train.py` is the main script to preprocess, train and register the model based on conditions
-`inference.py` is the main script to preprocess the new batch and predict.
-*I still have to add the TargetEncoder and OrdinalEncoder to the artifact for inference*
-
-```bash
-├── ml_pipeline
-    ├── pipeline
-    │   │   ├── condition_step.py
-    │   │   ├── config.py
-    │   │   ├── inference_step.py
-    │   │   ├── pipeline.py
-    │   │   ├── preprocess_step.py
-    │   │   ├── train_step.py
-    │   │   └── utils
-    │   │       └── step.py
-│   ├── inference.py
-│   └── train.py
+```sh
+.
+├── README.md
+├── airflow
+│   ├── dags
+│   │   ├── inference_pipeline.py
+│   │   └── training_pipeline.py
+├── artifacts
+├── data
+│   ├── features_store
+│   ├── preprocessed
+│   ├── hotel_bookings.parquet
+│   └── sample_for_inference.parquet
+├── mlflow
+├── notebooks
+│   ├── 0_exploratory_data_analysis.ipynb
+│   └── 1_preprocessed_data_check.ipynb
+├── requirements.txt
+└── steps
+    ├── condition_step.py
+    ├── config.py
+    ├── feature_engineering_step.py
+    ├── inference_step.py
+    ├── preprocess_step.py
+    ├── train_step.py
+    └── utils
+        ├── _artifact.py
+        └── data_classes.py
 ```
 
-# Try it yourself!
+The repository is structured as follows:
 
-## Set up your environment
-Create a new environment (python=3.9) and run:
+* **Data Exploratory Analysis (EDA)** is performed on **notebooks**,
+* Each stage of the Machine Learning process (**Preprocessing**, **Training**, **Inference**, etc...) is defined as a module designed to be implemented into a pipeline. They are all located in the *steps/* folder.
+* **Airflow** and **Mlflow** are deployed locally under this repository.
+* In the *data* folder is located the original dataset that was provided for this assignement, in addition of a sample for batch prediction. *data/features_store* and *data/preprocessed* are directories to store the data once processed by some stages of the pipelines, such as **preprocessing** or **features_engineering** steps.
+* The same idea for *artifacts* that contains **encoders** generated during the **features_engineering** step.
 
-```bash
-pip install -r requirements.txt
-```
 
-To ensure the python scripts run correctly, don't forget to add the repo path the PYTHONPATH.
-You can do by adding to `.bashrc` the following:
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-```bash
-export PYTHONPATH=path/to/the/repo
-```
 
-## Start MLflow
 
-To start Mlflow UI, run:
+## Getting started
 
-```bash
+The code runs with Airflow and Mlflow. 
+
+To launch these applications, open a terminal for each and type their respective command lines after having installed them. The complete procedure can be found in the [article](https://medium.com/towards-data-science/building-a-matching-tool-to-help-start-up-founders-find-the-best-incubators-an-end-to-end-bd65c41175bd).
+
+```sh
+# Terminal 1
 mlflow server --backend-store-uri mlflow/ --artifacts-destination mlflow/ --port 8000
 ```
 
-You'll normally see the previous experiments and the model stored in the model registry.
-
-## Run the training
-
-```bash
-python ml_pipeline/train.py
+```sh
+# Terminal 2
+airflow standalone
 ```
 
-## Run Inference
-*Work in Progress*
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Contributing
+
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+Don't forget to give the project a star! Thanks again!
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-...
-
-I hope you're going to enjoy it!
-
-
+<!-- MARKDOWN LINKS & IMAGES -->
+[linkedin-url]: https://www.linkedin.com/in/jeremy-arancio/
+[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+[stars-shield]: https://img.shields.io/github/stars/jeremyarancio/reservation_cancellation_prediction.svg?style=for-the-badge
+[stars-url]: https://github.com/jeremyarancio/reservation_cancellation_prediction/stargazers
+[forks-shield]: https://img.shields.io/github/forks/jeremyarancio/reservation_cancellation_prediction.svg?style=for-the-badge
+[forks-url]: https://github.com/jeremyarancio/reservation_cancellation_prediction/network/members

@@ -14,11 +14,13 @@ class ConditionStep:
 
     Args:
         criteria (float): Coefficient applied to the metric of the model registered in the model registry.
-        metric (str): Metric as a reference. Can be `["precision", "recall", or "roc_auc"]`. Default to `"roc_auc"`.
+        metric (str): Metric as a reference. Can be `["precision", "recall", or "roc_auc"]`.
     """
 
     def __init__(
-        self, criteria: float, metric: Literal["roc_auc", "precision", "recall"]
+        self, 
+        criteria: float, 
+        metric: Literal["roc_auc", "precision", "recall"]
     ) -> None:
         self.criteria = criteria
         self.metric = metric

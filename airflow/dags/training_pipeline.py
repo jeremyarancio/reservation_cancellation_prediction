@@ -8,7 +8,7 @@ from steps.preprocess_step import PreprocessStep
 from steps.train_step import TrainStep
 from steps.condition_step import ConditionStep
 from steps.feature_engineering_step import FeatureEngineeringStep
-from steps.utils.data_classes import PreprocessingData, FeaturesEngineeringEData
+from steps.utils.data_classes import PreprocessingData, FeaturesEngineeringData
 from steps.config import (
     TRAINING_DATA_PATH,
     TrainerConfig,
@@ -23,7 +23,7 @@ preprocessing_data = PreprocessingData(
     train_path=PreprocessConfig.train_path,
     test_path=PreprocessConfig.test_path
 )
-feature_engineering_data = FeaturesEngineeringEData(
+feature_engineering_data = FeaturesEngineeringData(
     train_path=FeatureEngineeringConfig.train_path,
     test_path=FeatureEngineeringConfig.test_path,
     encoders_path=FeatureEngineeringConfig.encoders_path,
@@ -48,18 +48,18 @@ condition_step = ConditionStep(
 )
 
 default_args = {
-    "owner": "user",
-    "depends_on_past": False,
-    "retries": 0,
-    "catchup": False,
+    "owner": "user",                     # user's name
+    "depends_on_past": False,            # keeps a task from getting triggered if the previous schedule for the task hasn’t succeeded.
+    "retries": 0,                        # Number of retries for a dag 
+    "catchup": False,                    # Run the dag from the start_date to today in respect to the trigger frequency 
 }
 
 with DAG(
-    "training-pipeline",
-    default_args=default_args,
-    start_date=datetime(2023, 12, 19),
-    tags=["training"],
-    schedule=None,
+    "training-pipeline",                 # Dag name
+    default_args=default_args,           # Default dag's arguments that can be share accross dags 
+    start_date=datetime(2023, 12, 19),   # Reference date for the scheduler (mandatory)
+    tags=["training"],                   # tags
+    schedule=None,                       # No repetition
 ) as dag:
     preprocessing_task = PythonOperator(
         task_id="preprocessing",

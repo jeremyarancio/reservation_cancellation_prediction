@@ -8,14 +8,10 @@ from steps.utils.data_classes import PreprocessingData
 
 class PreprocessStep:
     """Preprocessing based on Exploratory Data Analysis done in `notebooks/0_exploratory_data_analysis.ipynb`
-    Cat objects are transformed respectively with TargetEncoder or OrdinalEncoder.
-    Check the notebook for more details.
-
+    
     Args:
-        data_path (str): data.parquet file to preprocess. If `training_mode==False`, switch the preprocessing to inference mode.
-        preprocessed_data_path (Optional[Path], optional): Output path of the preprocessed data. Defaults to None.
-        training_mode (Optional[bool], optional): Switch to training or inference mode. Defaults to True.
-    """
+        inference_mode (bool): Training or inference mode.
+        preprocessing_data (PreprocessingData): PreprocessingStep output paths."""
 
     def __init__(
         self,
@@ -29,6 +25,9 @@ class PreprocessStep:
         """Data is preprocessed then, regarding if inference=True or False:
             * False: Split data into train and test.
             * True: Data preprocessed then returned simply
+        
+        Args:
+            data_path (Path): Input
         """
 
         preprocessed_df = pd.read_parquet(data_path)

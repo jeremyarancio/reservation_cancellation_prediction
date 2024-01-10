@@ -71,7 +71,7 @@ class TrainStep:
             }
 
             # Mlflow
-            mlflow.log_params(TrainerConfig.params)
+            mlflow.log_params(self.params)
             mlflow.log_metrics(metrics)
             mlflow.set_tag(key="model", value=self.model_name)
             mlflow.sklearn.log_model(

@@ -6,7 +6,7 @@ from airflow.operators.python import PythonOperator
 from steps.preprocess_step import PreprocessStep
 from steps.inference_step import InferenceStep
 from steps.feature_engineering_step import FeatureEngineeringStep
-from steps.utils.data_classes import PreprocessingData, FeaturesEngineeringEData
+from steps.utils.data_classes import PreprocessingData, FeaturesEngineeringData
 from steps.config import (
     FeatureEngineeringConfig,
     INFERENCE_DATA_PATH,
@@ -19,7 +19,7 @@ inference_mode = True
 preprocessing_data = PreprocessingData(
     batch_path=PreprocessConfig.batch_path
 )
-features_engineering_data = FeaturesEngineeringEData(
+features_engineering_data = FeaturesEngineeringData(
     batch_path=FeatureEngineeringConfig.batch_path,
     encoders_path=FeatureEngineeringConfig.encoders_path,
 )

@@ -6,7 +6,7 @@ from pathlib import Path
 from sklearn.preprocessing import TargetEncoder, OrdinalEncoder
 import pandas as pd
 
-from steps.utils.data_classes import FeaturesEncoder, FeaturesEngineeringEData
+from steps.utils.data_classes import FeaturesEncoder, FeaturesEngineeringData
 from steps.config import FeatureEngineeringConfig
 
 
@@ -14,12 +14,17 @@ LOGGER = logging.getLogger(__name__)
 
 
 class FeatureEngineeringStep:
-    """Feature engineering: transform data for model training and for inference."""
+    """Feature engineering: transform features for model training and inference.
+    
+    Args:
+        inference_mode (bool): Whether the step is used in the training or inference pipeline. 
+        feature_engineering_data (FeaturesEngineeringData): Paths relative to the FeatureEngineeringStep
+    """
 
     def __init__(
         self, 
         inference_mode: bool, 
-        feature_engineering_data: FeaturesEngineeringEData
+        feature_engineering_data: FeaturesEngineeringData
     ) -> None:
         self.inference_mode = inference_mode
         self.feature_engineering_data = feature_engineering_data
@@ -31,7 +36,8 @@ class FeatureEngineeringStep:
         batch_path: Optional[Path] = None,
     ) -> None:
         """
-        Data path as inputs to implement depending on whether it's training (train, test) or inference (batch)
+        Input data paths depending on whether it's training (train, test) or inference (batch)
+
         Args:
             train_path (Optional[Path], optional): Input train path. Defaults to None.
             test_path (Optional[Path], optional): Input test path. Defaults to None.
@@ -127,7 +133,8 @@ class FeatureEngineeringStep:
             feature_encoders (FeatureEncoders): Encoders artifact
         """
         ordinal_encoder = OrdinalEncoder(
-            handle_unknown="use_encoded_value", unknown_value=-1
+            handle_unknown="use_encoded_value", 
+            unknown_value=-1
         )
         target_encoder = TargetEncoder()
         return FeaturesEncoder(
