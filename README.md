@@ -21,7 +21,9 @@ To accomplish this task, **Airflow** and **Mlflow** are used to build Machine Le
 
 This Github repo comes with a complete article published in the [Towards Data Science](https://towardsdatascience.com/) journal on Medium:
 
-[Build Machine Learning Pipelines with Airflow and Mlflow: Reservation Cancellation Forecasting.](https://medium.com/towards-data-science/building-a-matching-tool-to-help-start-up-founders-find-the-best-incubators-an-end-to-end-bd65c41175bd)
+## Article link
+
+[Build Machine Learning Pipelines with Airflow and Mlflow: Reservation Cancellation Forecasting.](https://medium.com/towards-data-science/build-machine-learning-pipelines-with-airflow-and-mlflow-reservation-cancellation-forecasting-da675d409842)
 
 ## Code organization
 
@@ -72,7 +74,7 @@ The repository is structured as follows:
 
 The code runs with Airflow and Mlflow. 
 
-To launch these applications, open a terminal for each and type their respective command lines after having installed them. The complete procedure can be found in the [article](https://medium.com/towards-data-science/building-a-matching-tool-to-help-start-up-founders-find-the-best-incubators-an-end-to-end-bd65c41175bd).
+To launch these applications, open a terminal for each and type their respective command lines after having installed them. The complete procedure can be found in the [article](https://medium.com/towards-data-science/build-machine-learning-pipelines-with-airflow-and-mlflow-reservation-cancellation-forecasting-da675d409842).
 
 ```sh
 # Terminal 1
